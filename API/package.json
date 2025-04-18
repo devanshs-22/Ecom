@@ -11,6 +11,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "cors": "^2.8.5",
     "cryptoaes": "^1.0.3",
     "cryptojs": "^2.5.3",
     "dotenv": "^16.5.0",

@@ -42,7 +42,6 @@ export const sliderItems = [
       cat:"jeans"
     },
   ];
-  
   export const popularProducts = [
     {
       id:1,

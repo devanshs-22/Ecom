@@ -5,7 +5,8 @@ const dotenv = require("dotenv");
 const dbconnect = require("./config/database");
 dotenv.config();
 dbconnect();
-
+const cors = require("cors");
+app.use(cors());
 app.use(express.json());
 
 const userRoute = require("./routes/userRoutes");
