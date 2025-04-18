@@ -8,6 +8,8 @@ import { mobile } from "../pages/responsive";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { publicRequest } from "../requestMethods";
+import { addProduct } from "../redux/cartRedux";
+import { useDispatch } from "react-redux";
 
 const Container = styled.div``;
 
@@ -120,21 +122,19 @@ const Button = styled.button`
 
 const Product = () => {
   const location = useLocation();
-  const id = location.pathname.split("/")[2]; // Adjust based on your route structure (e.g., /product/:id)
+  const id = location.pathname.split("/")[2];
   const [product, setProduct] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const getProduct = async () => {
       try {
-        const res = await publicRequest.get(`/products/find/${id}`);
-        console.log("Product data:", res.data); // Debug the response
+        const res = await publicRequest.get("/products/find/" + id);
         setProduct(res.data);
-      } catch (err) {
-        console.error("Error fetching product:", err);
-      }
+      } catch {}
     };
     getProduct();
   }, [id]);
@@ -146,6 +146,7 @@ const Product = () => {
       setQuantity(quantity + 1);
     }
   };
+
   const handleClick = () => {
     dispatch(
       addProduct({ ...product, quantity, color, size })
@@ -157,39 +158,25 @@ const Product = () => {
       <Announcement />
       <Wrapper>
         <ImgContainer>
-          <Image src={product.img || "https://via.placeholder.com/400"} />
+          <Image src={product.img} />
         </ImgContainer>
         <InfoContainer>
-          <Title>{product.title || "Product Title"}</Title>
-          <Desc>{product.desc || "Product description not available"}</Desc>
-          <Price>INR {product.price || 0}</Price>
+          <Title>{product.title}</Title>
+          <Desc>{product.desc}</Desc>
+          <Price>$ {product.price}</Price>
           <FilterContainer>
             <Filter>
               <FilterTitle>Color</FilterTitle>
-              {product.color?.length > 0 ? (
-                product.color.map((c) => (
-                  <FilterColor
-                    color={c}
-                    key={c}
-                    onClick={() => setColor(c)}
-                  />
-                ))
-              ) : (
-                <span>No colors available</span>
-              )}
+              {product.color?.map((c) => (
+                <FilterColor color={c} key={c} onClick={() => setColor(c)} />
+              ))}
             </Filter>
             <Filter>
               <FilterTitle>Size</FilterTitle>
-              <FilterSize onChange={(e) => setSize(e.target.value)} value={size}>
-                {product.size?.length > 0 ? (
-                  product.size.map((s) => (
-                    <FilterSizeOption key={s} value={s}>
-                      {s}
-                    </FilterSizeOption>
-                  ))
-                ) : (
-                  <FilterSizeOption disabled>No sizes available</FilterSizeOption>
-                )}
+              <FilterSize onChange={(e) => setSize(e.target.value)}>
+                {product.size?.map((s) => (
+                  <FilterSizeOption key={s}>{s}</FilterSizeOption>
+                ))}
               </FilterSize>
             </Filter>
           </FilterContainer>
